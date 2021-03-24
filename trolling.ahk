@@ -10,6 +10,7 @@ SetDefaultMouseSpeed, 0
 bitmap := ""
 time_period = 3
 drawloop = 0
+list_dir := {}
 
 
 gui_populate()
@@ -58,7 +59,7 @@ Gui, Add, Radio, vaction gCopyMode Checked, copy
 Gui, Add, Radio, gDrawMode, draw
 ImgList = ""
 
-Gui, Add, ListView, vdir_view gSelected w280 +AltSubmit -Hdr -Multi
+Gui, Add, ListView, vdir_view gSelected w280 +AltSubmit -Hdr -Multi -ReadOnly
 Gui, Add, Button, Default, Save
 
 Gui, Add, Text, vsleep_duration_label ys, sleep duration (ms)
@@ -100,7 +101,7 @@ bitmap.Seek(18)
 bitmap.RawRead(buffer, 8)
 width := NumGet(buffer, 0, "uint")
 height := NumGet(buffer, 4, "uint")
-padding := Mod(4 - Mod(width, 4), 4)
+padding := Mod(4 - Mod(width * 3, 4), 4)
 
 MouseGetPos, mouseX, mouseY
 ofstX = 0
@@ -128,7 +129,7 @@ while drawloop
 			DllCall("Sleep", "uint", sleep_duration)
 		}
 
-		address := (3 * (width + padding)) * (height - ofstY + 1) + meta_length
+		address := (3 * width + padding) * (height - ofstY + 1) + meta_length
 		bitmap.Seek(address) ; seek to start of new line
 		ofstX = 0
 		ofstY -= precision
@@ -157,6 +158,7 @@ while drawloop
 	ofstX += precision
 }
 
+drawloop = 0
 DllCall("Winmm\timeEndPeriod", "uint", time_period)
 return
 
@@ -177,6 +179,41 @@ if (A_GuiEvent == "I")
 	else if InStr(ErrorLevel, "s", 1) ; deselected
 		GuiControl, Disable, Save
 }
+
+else if (A_GuiEvent == "K" && A_EventInfo == 46) ; delete key
+{
+	row := LV_GetNext()
+	LV_GetText(selection, row)
+	if selection
+	{
+		msg_opts := 4 + 32 + 256 + 4096
+		msg_text = delete "%selection%"?
+		MsgBox % msg_opts,, %msg_text%
+		IfMsgBox, Yes
+		{
+			LV_Delete(row)
+			path := list_dir.path selection list_dir.ext
+			FileDelete, %path%
+			GuiControl, Disable, Save
+		}
+	}
+}
+
+else if (A_GuiEvent == "E") ; began editing
+{
+	row := A_EventInfo
+	LV_GetText(filename_old, row)
+}
+
+else if (A_GuiEvent == "e") ; finished editing
+{
+	row := A_EventInfo
+	LV_GetText(filename_new, row)
+	filename_old := list_dir.path filename_old list_dir.ext
+	filename_new := list_dir.path filename_new list_dir.ext
+	FileMove, %filename_old%, %filename_new%
+}
+
 return
 
 CopyMode:
@@ -191,6 +228,8 @@ Loop, copypastas\*.txt
 LV_ModifyCol()
 
 gui_populate()
+list_dir.path := "copypastas\"
+list_dir.ext := ".txt"
 return
 
 DrawMode:
@@ -209,6 +248,8 @@ Loop, drawings\*.bmp
 	LV_Add("Icon" . A_Index, SubStr(A_LoopFileName, 1, -4))
 
 gui_populate()
+list_dir.path := "drawings\"
+list_dir.ext := ".bmp"
 return
 
 ButtonSave:
@@ -217,26 +258,28 @@ LV_GetText(selection, LV_GetNext())
 
 if (action == 1) ; copy
 {
-	FileRead, pasta, copypastas\%selection%.txt
+	path := list_dir.path selection list_dir.ext
+	FileRead, pasta, %path%
 	clipboard := pasta
 }
 else if (action == 2) ; draw
 {
 	if selection
-		path = drawings\%selection%.bmp
+		path := list_dir.path selection list_dir.ext
 	else
 	{
 		RegExMatch(img_url, "(?:[^\/](?!\/))+$", filename)
-		file := "drawings\" filename
+		file := list_dir filename
 		UrlDownloadToFile, %img_url%, %file%
-		path := SubStr(file, 1, -4) ".bmp"
+		path := list_dir.path SubStr(file, 1, -4) list_dir.ext
 		RunWait, %ComSpec% /c magick %file% -compress none %path%,, Hide
-		Run, %ComSpec% /c del %file%,, Hide
+		FileDelete, %file%
 	}
 	bitmap := FileOpen(path, "r")
 	if !IsObject(bitmap)
 	{
-		MsgBox % "failed to open file"
+		msg_opts := 16 + 4096
+		MsgBox % msg_opts,, failed to open file
 		return
 	}
 }
