@@ -16,7 +16,7 @@ the drawings all must be uncompressed .bmp files in the drawings folder
 
 downloading from a url will attempt to autoconvert to a bmp, make sure the url ends with a file extension
 
-if the conversion failed (image was compressed) the image will look strange, so don't sue me. in fact, most images will fail. I noticed images with transparency tend to fail often.
+if the conversion failed (image was compressed) the image will look strange, so don't sue me. in fact, most images will fail. I noticed jpegs fare a bit better.
 
 (no idea how to use image processing with ahk and frankly there's no reason to find out for a small project, conversion with magick is the best you're gonna get. oh yeah, you'll need imagemagick :trollface:)
 

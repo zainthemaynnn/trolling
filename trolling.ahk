@@ -272,7 +272,7 @@ else if (action == 2) ; draw
 		file := list_dir filename
 		UrlDownloadToFile, %img_url%, %file%
 		path := list_dir.path SubStr(file, 1, -4) list_dir.ext
-		RunWait, %ComSpec% /c magick %file% -compress none %path%,, Hide
+		RunWait, %ComSpec% /c magick convert %file% -compress none -depth 24 %path%,, Hide
 		FileDelete, %file%
 	}
 	bitmap := FileOpen(path, "r")
@@ -282,6 +282,8 @@ else if (action == 2) ; draw
 		MsgBox % msg_opts,, failed to open file
 		return
 	}
+	else
+		MsgBox, saved
 }
 return
 
