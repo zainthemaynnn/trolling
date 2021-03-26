@@ -20,7 +20,7 @@ if the conversion failed (image was compressed) the image will look strange, so 
 
 (no idea how to use image processing with ahk and frankly there's no reason to find out for a small project, conversion with magick is the best you're gonna get. oh yeah, you'll need imagemagick :trollface:)
 
-remember, you can always use **CTRL + J** again to kill the process. be careful with it. it has no mercy.
+remember, you can always use the same shortcut or press escape to kill the process. be careful with it. it has no mercy.
 
 ### options
 sleep duration will affect the speed it draws at... if it gets too fast or lags too much you will probably get ugly lines because you can't click that fast.
