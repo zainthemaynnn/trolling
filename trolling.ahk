@@ -220,36 +220,39 @@ CopyMode:
 GuiControl, Disable, Save
 cleanLV(ImgList)
 GuiControl, Move, dir_view, w120
+gui_populate()
+
+list_dir.path := "copypastas\"
+list_dir.ext := ".txt"
 
 GuiControl, +Report, dir_view
 LV_InsertCol(1,, "name")
-Loop, copypastas\*.txt
+path := list_dir.path "*" list_dir.ext
+Loop, %path%
 	LV_Add("", SubStr(A_LoopFileName, 1, -4))
 LV_ModifyCol()
-
-gui_populate()
-list_dir.path := "copypastas\"
-list_dir.ext := ".txt"
 return
 
 DrawMode:
 GuiControl, Disable, Save
 cleanLV(ImgList)
 GuiControl, Move, dir_view, w260
+gui_populate()
+
+list_dir.path := "drawings\"
+list_dir.ext := ".bmp"
 
 GuiControl, +Icon, dir_view
 LV_InsertCol(1, "icon")
+path := list_dir.path "*" list_dir.ext
 ImgList := IL_Create(10,, 1)
 LV_SetImageList(ImgList)
 
-Loop, drawings\*.bmp
+Loop, %path%
 	IL_Add(ImgList, A_LoopFilePath, 0xFFFFFF, 1)
-Loop, drawings\*.bmp
+Loop, %path%
 	LV_Add("Icon" . A_Index, SubStr(A_LoopFileName, 1, -4))
 
-gui_populate()
-list_dir.path := "drawings\"
-list_dir.ext := ".bmp"
 return
 
 ButtonSave:
