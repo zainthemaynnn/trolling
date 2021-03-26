@@ -53,6 +53,12 @@ if WinExist("copypastas")
 	return
 }
 
+if drawloop
+{
+	drawloop = 0
+	return
+}
+
 Gui, New, +AlwaysOnTop -Caption, copypastas
 Gui, Add, Text,, we do a little trolling...
 Gui, Add, Radio, vaction gCopyMode Checked, copy
@@ -86,12 +92,6 @@ return
 if !IsObject(bitmap)
 {
 	MsgBox % "no drawing stored"
-	return
-}
-
-if drawloop
-{
-	drawloop = 0
 	return
 }
 
@@ -160,13 +160,6 @@ while drawloop
 
 drawloop = 0
 DllCall("Winmm\timeEndPeriod", "uint", time_period)
-return
-
-Escape::
-if WinActive("copypastas")
-	WinClose
-if drawloop
-	drawloop = 0
 return
 
 
