@@ -6,6 +6,8 @@ some example files are provided
 ## hao 2 use:
 CTRL + J to open the menu
 
+there are already some domos provided that you can use for testing
+
 ## COPY:
 glorified clipboard
 
