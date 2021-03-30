@@ -1,10 +1,8 @@
 # trolling
 barebones program I made with autohotkey over like five days  
-some example files are provided
 
 ## hao 2 use:
-CTRL + J to open the menu
-
+CTRL + J to open the menu  
 there are already some domos provided that you can use for testing
 
 ## COPY:
@@ -14,7 +12,7 @@ glorified clipboard
 copies to a built in memory location. **WIN + J** will begin drawing. the top left corner will align with your cursor. size is the same as original file.
 
 the drawings all must be uncompressed .bmp files in the drawings folder  
-downloading from a url will attempt to autoconvert to a bmp, make sure the url ends with a file extension
+downloading from a url will attempt to autoconvert to a bmp, make sure the url ends with a file extension  
 if the conversion failed (image was compressed) the image will look strange, so don't sue me. in fact, most images will fail. I noticed jpegs fare a bit better.  
 
 (no idea how to use image processing with ahk and frankly there's no reason to find out for a small project, conversion with magick is the best you're gonna get. oh yeah, you'll need imagemagick :trollface:)  
